@@ -5,8 +5,8 @@
 #include <chrono>
 
 // Função para multiplicar uma parte das matrizes
-void multiplyMatrices(const std::vector<std::vector<int>>& matrixA,
-                      const std::vector<std::vector<int>>& matrixB,
+void multiplyMatrices(const std::vector<std::vector<int>>& matrix1,
+                      const std::vector<std::vector<int>>& matrix2,
                       std::vector<std::vector<int>>& result,
                       int start, int end, int p, int rows1, int rows2, int cols2) {
     // std::cout << "Começo: " << start << " e fim: " << end << std::endl;
@@ -16,12 +16,12 @@ void multiplyMatrices(const std::vector<std::vector<int>>& matrixA,
         int col = i%cols2;
         // printf("Elemento [%d][%d]\n", row,col);
         for (int k = 0; k < rows2; ++k) {
-            // printf("Elemento [%d][%d] += matrixA[%d][%d] * matrixB[%d][%d]\n", row,col,row,k,k,col);
-            result[row][col] += matrixA[row][k] * matrixB[k][col];
+            // printf("Elemento [%d][%d] += matrix1[%d][%d] * matrix2[%d][%d]\n", row,col,row,k,k,col);
+            result[row][col] += matrix1[row][k] * matrix2[k][col];
         }
     }
 
-    std::string out = "threads_out";
+    std::string out = "procs_out";
     out.push_back(p + '1');
     std::ofstream arquivoSaida(out+".txt");
 
@@ -38,7 +38,7 @@ void multiplyMatrices(const std::vector<std::vector<int>>& matrixA,
 
     arquivoSaida.close();
 
-    std::cout << "Thread " << p+1 << " concluída." << std::endl;
+    std::cout << "Processo " << p+1 << " concluído." << std::endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -88,13 +88,20 @@ int main(int argc, char *argv[]) {
     arquivoM2.close();
 
     int procs = (rows1*cols2)/p;
+    // std::cout << procs << std::endl;
+    if(p*procs < rows1*cols2)procs++;
+    // std::cout << procs << std::endl;
     int start = 0;
     int end = 0;
+    int x = 0;
     pid_t pid;
+    auto startTime = std::chrono::high_resolution_clock::now();     
     for (int i = 0; i < procs; ++i) {
+        x = i;
         start = i * p;
         end = (i == procs - 1) ? rows1*cols2 : start + p;
         if(i != procs - 1){
+            startTime = std::chrono::high_resolution_clock::now();
             pid = fork();
             if (pid < 0) { /* ocorrência de erro*/
                 fprintf(stderr, "Criação Falhou");
@@ -104,10 +111,19 @@ int main(int argc, char *argv[]) {
                 break;
             }
         }
-        threads.emplace_back(multiplyMatrices, std::ref(M1), std::ref(M2), std::ref(result), start, end, i, rows1, rows2, cols2);
         // std::cout << "batata\n" << std::endl;
     }
-
-    multiplyMatrices(std::ref(M1), std::ref(M2), std::ref(result), start, end, i, rows1, rows2, cols2);
+    std::string out = "procs_out";
+    out.push_back(x + '1');
+    multiplyMatrices(M1, M2, result, start, end, x, rows1, rows2, cols2);
+    auto stopTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
+    std::ofstream arquivoSaida(out+".txt", std::ios::app);
+    if (!arquivoSaida.is_open()) {
+        std::cerr << "Não foi possível abrir o arquivo." << std::endl;
+        return 1; // Saia do programa ou trate o erro de outra forma
+    }
+    arquivoSaida << duration.count() << std::endl;
+    arquivoSaida.close();
     return 0;
 }

@@ -90,6 +90,7 @@ int main(int argc, char *argv[]) {
     std::vector<std::thread> threads;
 
     int numthread = (rows1*cols2)/p;
+    if(p*numthread < rows1*cols2)numthread++;
 
     for (int i = 0; i < numthread; ++i) {
         int start = i * p;
@@ -114,7 +115,7 @@ int main(int argc, char *argv[]) {
             std::cerr << "Não foi possível abrir o arquivo." << std::endl;
             return 1; // Saia do programa ou trate o erro de outra forma
         }
-        arquivoSaida << "Tempo de execução (ms): " << duration.count() << std::endl;
+        arquivoSaida << duration.count() << std::endl;
         arquivoSaida.close();
         x++;
     }
