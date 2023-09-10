@@ -91,11 +91,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    arquivoSaida << "Tempo de execução (ms): " << duration.count() << endl;
+    arquivoSaida <<  duration.count() << endl;
 
     arquivoSaida.close();
 
-    cout << "Multiplicação de matrizes concluída com sucesso." << endl;
+    cout << duration.count() << endl;
 
     return 0;
 }

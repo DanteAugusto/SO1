@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <unistd.h>
 #include <fstream>
 #include <vector>
@@ -22,8 +23,7 @@ void multiplyMatrices(const std::vector<std::vector<int>>& matrix1,
     }
 
     std::string out = "procs_out";
-    out.push_back(p + '1');
-    std::ofstream arquivoSaida(out+".txt");
+    std::ofstream arquivoSaida(out+std::to_string(p)+".txt");
 
     if (!arquivoSaida.is_open()) {
         std::cout << "Erro ao abrir o arquivo de saída." << std::endl;
@@ -114,11 +114,10 @@ int main(int argc, char *argv[]) {
         // std::cout << "batata\n" << std::endl;
     }
     std::string out = "procs_out";
-    out.push_back(x + '1');
     multiplyMatrices(M1, M2, result, start, end, x, rows1, rows2, cols2);
     auto stopTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
-    std::ofstream arquivoSaida(out+".txt", std::ios::app);
+    std::ofstream arquivoSaida(out+std::to_string(x)+".txt", std::ios::app);
     if (!arquivoSaida.is_open()) {
         std::cerr << "Não foi possível abrir o arquivo." << std::endl;
         return 1; // Saia do programa ou trate o erro de outra forma

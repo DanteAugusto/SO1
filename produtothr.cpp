@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <thread>
 #include <fstream>
 #include <vector>
@@ -22,8 +23,8 @@ void multiplyMatrices(const std::vector<std::vector<int>>& matrixA,
     }
 
     std::string out = "threads_out";
-    out.push_back(p + '1');
-    std::ofstream arquivoSaida(out+".txt");
+    std::string idx = std::to_string(p);
+    std::ofstream arquivoSaida(out+idx+".txt");
 
     if (!arquivoSaida.is_open()) {
         std::cout << "Erro ao abrir o arquivo de saída." << std::endl;
@@ -101,16 +102,15 @@ int main(int argc, char *argv[]) {
 
     int x = 0;
     std::string out;
+    out = "threads_out";
     // Aguarda todas as threads concluírem
     for (std::thread& t : threads) {
-        out = "threads_out";
-        out.push_back(x + '1');
         // std::cout << "batata\n" << std::endl;
         auto startTime = std::chrono::high_resolution_clock::now();            
         t.join();
         auto stopTime = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
-        std::ofstream arquivoSaida(out+".txt", std::ios::app);
+        std::ofstream arquivoSaida(out+std::to_string(x)+".txt", std::ios::app);
         if (!arquivoSaida.is_open()) {
             std::cerr << "Não foi possível abrir o arquivo." << std::endl;
             return 1; // Saia do programa ou trate o erro de outra forma
