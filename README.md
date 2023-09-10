@@ -7,4 +7,4 @@ Para compilar o produtothr.cpp, use o comando
 
 Para compilar os outros, use o comando
 
-"g++ -std=c++11 produtothr.cpp -o nome_do_executavel"
+"g++ -std=c++11 arquivo_sem_threads.cpp -o nome_do_executavel"
