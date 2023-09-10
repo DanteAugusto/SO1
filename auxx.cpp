@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
     int n2 = atoi(argv[3]);
     int m2 = atoi(argv[4]);
 
-    gerarMatrizAleatoria(n1, m1, "M1.txt", n2, m2, "M2.txt");
+    gerarMatrizAleatoria(n1, m1, "outs/M1.txt", n2, m2, "outs/M2.txt");
 
     cout << "Matrizes geradas e salvas em M1.txt e M2.txt." << endl;
 
