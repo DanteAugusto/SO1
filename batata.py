@@ -27,7 +27,7 @@ saida = subprocess.check_output(comando, shell=True)
 comando = "g++ -std=c++11 produtoproc.cpp -o exec/prdproc"
 saida = subprocess.check_output(comando, shell=True)
 
-while(time < 120000):
+while(time < 1000):
     # Gera as matrizes
     comando = "./exec/generator "+str(N)+ " "+str(N)+ " "+str(N)+ " "+str(N)
     saida = subprocess.check_output(comando, shell=True)
@@ -57,6 +57,7 @@ while(time < 120000):
                     if linhas:
                         # Obtém a última linha (índice -1)
                         ultima_linha = linhas[-1]
+                        print(ultima_linha)
 
                         # Tente converter a última linha em um número
                         try:

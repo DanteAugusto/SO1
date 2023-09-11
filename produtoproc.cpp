@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <unistd.h>
+#include <sys/wait.h>
+#include <map>
 #include <fstream>
 #include <vector>
 #include <chrono>
@@ -94,35 +96,45 @@ int main(int argc, char *argv[]) {
     int start = 0;
     int end = 0;
     int x = 0;
-    pid_t pid;
-    auto startTime = std::chrono::high_resolution_clock::now();     
-    for (int i = 0; i < procs; ++i) {
-        x = i;
+    std::vector<pid_t> pids(procs);
+    std::map<pid_t, int> map_index;
+    std::map<pid_t, std::chrono::steady_clock::time_point> map_beginsTime;
+
+
+    for(int i{0}; i<procs; ++i){
         start = i * p;
         end = (i == procs - 1) ? rows1*cols2 : start + p;
-        if(i != procs - 1){
-            startTime = std::chrono::high_resolution_clock::now();
-            pid = fork();
-            if (pid < 0) { /* ocorrência de erro*/
-                fprintf(stderr, "Criação Falhou");
-                exit(-1);
-            }
-            else if (pid == 0) { /* processo filho*/
-                break;
-            }
+        auto begin = std::chrono::steady_clock::now();
+        pids[i] = fork();
+        
+        if(pids[i] == 0){
+            multiplyMatrices(M1, M2, result, start, end, i, rows1, rows2, cols2);
+            exit(0);
         }
-        // std::cout << "batata\n" << std::endl;
+        else{
+            map_index[pids[i]] = i;
+            map_beginsTime[pids[i]] = begin;
+        }
+
     }
+
     std::string out = "outs/procs_out";
-    multiplyMatrices(M1, M2, result, start, end, x, rows1, rows2, cols2);
-    auto stopTime = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime);
-    std::ofstream arquivoSaida(out+std::to_string(x)+".txt", std::ios::app);
-    if (!arquivoSaida.is_open()) {
-        std::cerr << "Não foi possível abrir o arquivo." << std::endl;
-        return 1; // Saia do programa ou trate o erro de outra forma
+    pid_t pid_filho;
+    for(int i{0}; i < procs; ++i){
+        pid_filho = wait(NULL);
+        auto stopTime = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - map_beginsTime[pid_filho]);
+        std::ofstream arquivoSaida(out+std::to_string(map_index[pid_filho])+".txt", std::ios::app);
+        if (!arquivoSaida.is_open()) {
+            std::cerr << "Não foi possível abrir o arquivo." << std::endl;
+            return 1; // Saia do programa ou trate o erro de outra forma
+        }
+        arquivoSaida << duration.count() << std::endl;
+        arquivoSaida.close();
+
     }
-    arquivoSaida << duration.count() << std::endl;
-    arquivoSaida.close();
+    
+    auto stopTime = std::chrono::steady_clock::now();
+    
     return 0;
 }

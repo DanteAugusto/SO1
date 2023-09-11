@@ -69,9 +69,9 @@ int main(int argc, char *argv[]) {
     arquivoM2.close();
 
     // Realizar a multiplicação das matrizes e medir o tempo
-    auto start = high_resolution_clock::now();
+    auto start = steady_clock::now();
     vector<vector<int>> resultado = multiplicarMatrizes(M1, M2);
-    auto stop = high_resolution_clock::now();
+    auto stop = steady_clock::now();
 
     auto duration = duration_cast<milliseconds>(stop - start);
 
