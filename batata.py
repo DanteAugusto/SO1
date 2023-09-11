@@ -1,6 +1,7 @@
 import subprocess
 import matplotlib.pyplot as plt
 import numpy as np
+import csv
 # Dimensão das matrizes quadradas (começa com 100)
 N = 100
 
@@ -27,7 +28,7 @@ saida = subprocess.check_output(comando, shell=True)
 comando = "g++ -std=c++11 produtoproc.cpp -o exec/prdproc"
 saida = subprocess.check_output(comando, shell=True)
 
-while(time < 1000):
+while(time < 120000):
     # Gera as matrizes
     comando = "./exec/generator "+str(N)+ " "+str(N)+ " "+str(N)+ " "+str(N)
     saida = subprocess.check_output(comando, shell=True)
@@ -57,7 +58,7 @@ while(time < 1000):
                     if linhas:
                         # Obtém a última linha (índice -1)
                         ultima_linha = linhas[-1]
-                        print(ultima_linha)
+                        # print(ultima_linha)
 
                         # Tente converter a última linha em um número
                         try:
@@ -119,22 +120,44 @@ while(time < 1000):
 print(saida.decode("utf-8"))
 
 # Arrays com os resultados
-matriz_sizes = avarage_time_per_dimension[0]
-seq_time = avarage_time_per_dimension[1]
-thread_time = avarage_time_per_dimension[2]
-proc_time = avarage_time_per_dimension[3]
+data = np.array(avarage_time_per_dimension)
+matriz_sizes = data[:, 0]
+seq_time = data[:, 1]
+thread_time = data[:, 2]
+proc_time = data[:, 3]
 
 # Crie um gráfico de linha para cada função e adicione legendas
 plt.scatter(matriz_sizes, seq_time, label='Tempo do codigo sequencial')
 plt.scatter(matriz_sizes, thread_time, label='Tempo do codigo de threads paralelas')
 plt.scatter(matriz_sizes, proc_time, label='Tempo do código de processos paralelos')
 
+# Adiciona a legenda
+plt.legend(loc='upper right', frameon = False, fontsize = 6)
+
 # Adicione rótulos aos eixos x e y
 plt.xlabel('Tamanho da matriz')
-plt.ylabel('Tempo')
+plt.ylabel('Tempo (ms)')
+
+# Configure os eixos x e y em escala logarítmica
+plt.xscale('log')
+plt.yscale('log')
 
 # Adicione um título ao gráfico
 plt.title('Tempo X elementos')
 
 # Exiba o gráfico
 plt.savefig('grafico.png')
+
+
+# Escrevendo no arquivo
+
+nome_arquivo_saida = "outs/dados.csv"
+
+with open(nome_arquivo_saida, 'w', newline='') as arquivo_saida:
+    # Crie um objeto escritor CSV
+    escritor_csv = csv.writer(arquivo_saida)
+
+    escritor_csv.writerow(["Tamanho da matriz", "tempo da execução sequencial", "tempo da execução multithread", "tempo da execução multiprocessos"])
+    # Escreva os dados no arquivo
+    for linha in avarage_time_per_dimension:
+        escritor_csv.writerow(linha)
