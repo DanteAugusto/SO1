@@ -13,19 +13,19 @@ timeproc = 0
 # Para armazenar os tempos e os tamanhos das matrizes
 avarage_time_per_dimension = []
 # Compila o gerador de matrizes
-comando = "g++ -std=c++11 auxx.cpp -o exec/generator"
+comando = "g++ auxx.cpp -o exec/generator"
 saida = subprocess.check_output(comando, shell=True)
 
 # Compila o produto de matrizes sequencial
-comando = "g++ -std=c++11 produtoseq.cpp -o exec/prdseq"
+comando = "g++ produtoseq.cpp -o exec/prdseq"
 saida = subprocess.check_output(comando, shell=True)
 
 # Compila o produto de matrizes com threads
-comando = "g++ -std=c++11 produtothr.cpp -o exec/prdthr -pthread"
+comando = "g++ produtothr.cpp -o exec/prdthr -pthread"
 saida = subprocess.check_output(comando, shell=True)
 
 # Compila o produto de matrizes com processos
-comando = "g++ -std=c++11 produtoproc.cpp -o exec/prdproc"
+comando = "g++ produtoproc.cpp -o exec/prdproc"
 saida = subprocess.check_output(comando, shell=True)
 
 while(time < 120000):
