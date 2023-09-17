@@ -98,7 +98,6 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < numthread; ++i) {
         begins[i] = std::chrono::steady_clock::now();            
         status = pthread_create(&threads[i], NULL, multiplyMatrices, (void *)(size_t)i);
-        // std::cout << "batata\n" << std::endl;
     }
 
     int x = 0;
@@ -106,7 +105,6 @@ int main(int argc, char *argv[]) {
     out = "outs/threads_out";
     // Aguarda todas as threads concluírem
     for (int i = 0; i < numthread; ++i) {
-        // std::cout << "batata\n" << std::endl;
         status = pthread_join(threads[i], NULL);
         ends[i] = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(ends[i] - begins[i]);

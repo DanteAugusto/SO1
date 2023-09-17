@@ -26,7 +26,7 @@ saida = subprocess.check_output(comando, shell=True)
 comando = "g++ produtoproc.cpp -o exec/prdproc"
 saida = subprocess.check_output(comando, shell=True)
 
-while(P < 1280000):
+while(P <= 1280000):
     mediathr = 0
     mediaproc = 0
     # Realiza o produto 10 vezes
@@ -34,7 +34,7 @@ while(P < 1280000):
         #Produto com threads
         comando = "./exec/prdthr outs/M1.txt outs/M2.txt "+ str(P)
         saida = subprocess.check_output(comando, shell=True) 
-        threads = int((1600*1600)/p)
+        threads = int((1600*1600)/P)
         if(threads * P < 1600*1600):
             threads = threads+1
         max_time_threads = 0
@@ -97,7 +97,7 @@ while(P < 1280000):
     mediaproc = mediaproc/10
     print("Teste feitos para P = "+str(P))
     avarage_time_per_p.append([P,mediathr,mediaproc])
-    P = P + 240000
+    P = P * 2
 
 # Executa o comando e captura a saída
 
@@ -123,7 +123,7 @@ plt.ylabel('Tempo (ms)')
 
 # Configure os eixos x e y em escala logarítmica
 plt.xscale('log')
-plt.yscale('log')
+# plt.yscale('log')
 
 # Adicione um título ao gráfico
 plt.title('Tempo X Ps')

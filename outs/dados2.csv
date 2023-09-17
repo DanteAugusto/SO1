@@ -1,0 +1,6 @@
+Tamanho da matriz,tempo da execução sequencial,tempo da execução multithread,tempo da execução multiprocessos
+80000,144463.9,139207.2
+160000,132116.9,136991.6
+320000,134792.7,138071.3
+640000,130599.7,129896.8
+1280000,167301.9,159715.2

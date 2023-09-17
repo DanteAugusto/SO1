@@ -105,8 +105,7 @@ int main(int argc, char *argv[]) {
         start = i * p;
         end = (i == procs - 1) ? rows1*cols2 : start + p;
         auto begin = std::chrono::steady_clock::now();
-        pids[i] = fork();
-        
+        pids[i] = fork();        
         if(pids[i] == 0){
             multiplyMatrices(M1, M2, result, start, end, i, rows1, rows2, cols2);
             exit(0);
